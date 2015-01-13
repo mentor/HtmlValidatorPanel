@@ -13,7 +13,8 @@ namespace Kdyby\Extension\Diagnostics\HtmlValidator;
 use Kdyby;
 use Nette\Utils\Html;
 use Nette\Utils\Strings;
-use Nette\Diagnostics\Debugger;
+use Tracy\Debugger;
+use Latte\Runtime\Filters;
 use Nette;
 
 
@@ -21,7 +22,7 @@ use Nette;
 /**
  * @author Filip Procházka <filip@prochazka.su>
  */
-class ValidatorPanel extends Nette\Object implements Nette\Diagnostics\IBarPanel
+class ValidatorPanel extends Nette\Object implements Tracy\IBarPanel
 {
 
 	// <editor-fold desc="XML validation constants">
@@ -794,8 +795,7 @@ class ValidatorPanel extends Nette\Object implements Nette\Diagnostics\IBarPanel
 	 */
 	public function getTab()
 	{
-		$data = callback('Nette\Templating\Helpers::dataStream');
-		$img = Html::el('img')->src($data(file_get_contents(__DIR__ . '/icon.png')))->height('16px');
+		$img = Html::el('img')->src(Filters::dataStream(file_get_contents(__DIR__ . '/icon.png')))->height('16px');
 		return $img . ($this->errors ? '<strong style="color:red;font-weight:bold">' . count($this->errors) . ' problems</strong>' : 'Ok');
 	}
 
@@ -812,10 +812,9 @@ class ValidatorPanel extends Nette\Object implements Nette\Diagnostics\IBarPanel
 		}
 
 		ob_start();
-		Nette\Utils\LimitedScope::load(__DIR__ . '/panel.phtml', array(
-			'errors' => $this->errors,
-			'html' => $this->html
-		));
+		$errors = $this->errors;
+		$html = $this->html;
+		require_once __DIR__ . '/panel.phtml';
 		return ob_get_clean();
 	}
 
