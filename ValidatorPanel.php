@@ -14,6 +14,7 @@ use Kdyby;
 use Nette\Utils\Html;
 use Nette\Utils\Strings;
 use Tracy\Debugger;
+use Tracy\IBarPanel;
 use Latte\Runtime\Filters;
 use Nette;
 
@@ -22,7 +23,7 @@ use Nette;
 /**
  * @author Filip Procházka <filip@prochazka.su>
  */
-class ValidatorPanel extends Nette\Object implements Tracy\IBarPanel
+class ValidatorPanel extends Nette\Object implements IBarPanel
 {
 
 	// <editor-fold desc="XML validation constants">
